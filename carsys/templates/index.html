@@ -9,6 +9,7 @@
         }
         #data {
             border-collapse: collapse;
+            border-collapse: collapse;
         }
         #data th {
             border-bottom: 1px solid black;
@@ -55,14 +56,27 @@
             </tr>
             {% endfor %}
         </table>
-        <div>
-            <button>首页</button>&nbsp;&nbsp;
-            <button>上一页</button>&nbsp;&nbsp;
-            第 页/共 页&nbsp;&nbsp;
-            <button>下一页</button>&nbsp;&nbsp;
-            <button>末页</button>
+        <div class="buttons">
+            <button data="?size={{ page_size }}">首页</button>&nbsp;&nbsp;
+            {% if has_prev %}
+            <button data="?page={{ new_page | add:'-1'}}&size={{ page_size }}">上一页</button>&nbsp;&nbsp;
+            {% else %}<button disabled>上一页</button>
+            {% endif %}
+            第 {{ new_page }} 页/共 {{ total_page }}页&nbsp;&nbsp;
+            {% if has_next %}
+            <button data="?page={{ new_page | add:'1' }}&size={{ page_size }}">下一页</button>&nbsp;&nbsp;
+            {% else %}<button disabled>下一页</button>
+            {% endif %}
+            <button data="?page={{ total_page }}&size={{ page_size }}">末页</button>
         </div>
         {% endif %}
     </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $('.buttons').on('click', evt => {
+            let queryString = $(evt.target).attr('data')
+            $('#search').attr('action', '/search/' + queryString).trigger('submit')
+        })
+    </script>
 </body>
 </html>
