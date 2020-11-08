@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>违章查询</title>
+    <style>
+        #result td {
+            text-align: center;
+        }
+        #data {
+            border-collapse: collapse;
+        }
+        #data th {
+            border-bottom: 1px solid black;
+        }
+        #data tr:last-child>td{
+            border: none;
+        }
+        #data td{
+            border-bottom: 1px dashed black;
+        }
+    </style>
+</head>
+<body>
+    <div id="result">
+        <form id="search" action="/search/" method="post">
+            {% csrf_token %}
+            <input type="text" size="30" name="carinfo" value="{{ carinfo }}" placeholder="请输入车牌号或车主姓名">
+            <input type="submit" value="查询">
+        </form>
+        <hr>
+        {% if records %}
+        <table id="data">
+            <tr>
+                <th width="100">车牌号</th>
+                <th width="100">车主姓名</th>
+                <th width="150">违章原因</th>
+                <th width="180">违章时间</th>
+                <th width="180">处罚方式</th>
+                <th width="100">是否受理</th>
+                <th width="120">操作</th>
+            </tr>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.car.carno }}</td>
+                <td>{{ record.car.owner }}</td>
+                <td>{{ record.reason }}</td>
+                <td>{{ record.makedate }}</td>
+                <td>{{ record.punish }}</td>
+                <td>{{ recoed.dealt | yesno:'已受理,未受理' }} </td>
+                <td>
+                    <button>受理</button>
+                    <button>删除</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div>
+            <button>首页</button>&nbsp;&nbsp;
+            <button>上一页</button>&nbsp;&nbsp;
+            第 页/共 页&nbsp;&nbsp;
+            <button>下一页</button>&nbsp;&nbsp;
+            <button>末页</button>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
