@@ -16,7 +16,7 @@ def search_records(request: HttpRequest) -> HttpResponse:
         page = page if page >= 1 else 1
         size = int(request.GET.get('size', '5'))
         size = size if 0 < size <= 50 else 5
-        queryset = Record.objects.filter(is_deleted=False)
+        queryset = Record.objects.filter(is_deleted=False).select_related('car')
         carinfo = request.POST.get('carinfo', '').strip().upper()
         if carinfo:
             queryset = queryset.filter(

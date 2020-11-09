@@ -14,8 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
+from carsys import settings
 from search.views import search_records, show_index
 
 urlpatterns = [
@@ -23,3 +24,10 @@ urlpatterns = [
     path('', show_index),
     path('search/', search_records),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
+
+
