@@ -30,7 +30,7 @@
             <input type="submit" value="查询">
         </form>
         <hr>
-        {% if records %}
+        {% if page_obj.object_list %}
         <table id="data">
             <tr>
                 <th width="100">车牌号</th>
@@ -41,7 +41,7 @@
                 <th width="100">是否受理</th>
                 <th width="120">操作</th>
             </tr>
-            {% for record in records %}
+            {% for record in page_obj.object_list %}
             <tr>
                 <td>{{ record.car.carno }}</td>
                 <td>{{ record.car.owner }}</td>
@@ -50,21 +50,21 @@
                 <td>{{ record.punish }}</td>
                 <td>{{ recoed.dealt | yesno:'已受理,未受理' }} </td>
                 <td>
-                    <button>受理</button>
-                    <button>删除</button>
+                    <a class="handle" href="/handle/?rno={{ record.no }}">受理</a>
+                    <a class="delete" href="/delete/?rno={{ record.no }}">删除</a>
                 </td>
             </tr>
             {% endfor %}
         </table>
         <div class="buttons">
             <button data="?size={{ page_size }}">首页</button>&nbsp;&nbsp;
-            {% if has_prev %}
-            <button data="?page={{ new_page | add:'-1'}}&size={{ page_size }}">上一页</button>&nbsp;&nbsp;
+            {% if page_obj.has_previous %}
+            <button data="?page={{ page_obj.number | add:'-1'}}&size={{ page_size }}">上一页</button>&nbsp;&nbsp;
             {% else %}<button disabled>上一页</button>
             {% endif %}
-            第 {{ new_page }} 页/共 {{ total_page }}页&nbsp;&nbsp;
-            {% if has_next %}
-            <button data="?page={{ new_page | add:'1' }}&size={{ page_size }}">下一页</button>&nbsp;&nbsp;
+            第 {{ page_obj.number }} 页/共 {{ total_page }} 页&nbsp;&nbsp;
+            {% if page_obj.has_next %}
+            <button data="?page={{ page_obj.number | add:'1' }}&size={{ page_size }}">下一页</button>&nbsp;&nbsp;
             {% else %}<button disabled>下一页</button>
             {% endif %}
             <button data="?page={{ total_page }}&size={{ page_size }}">末页</button>
