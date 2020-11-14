@@ -70,12 +70,74 @@
             <button data="?page={{ total_page }}&size={{ page_size }}">末页</button>
         </div>
         {% endif %}
+        <a href="/export/">导出Excel</a>
+        <a href="/expor/">导出人员表</a>
+        <div id="main" style="width: 800px;height:400px"></div>
     </div>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $('.buttons').on('click', evt => {
-            let queryString = $(evt.target).attr('data')
-            $('#search').attr('action', '/search/' + queryString).trigger('submit')
+        function loadPageData(evt) {
+            $('#search').attr(
+                'action', $(evt.target).attr('data')
+            ).trigger('submit')
+        }
+
+        $(() => {
+            $('.buttons>button').on('click', loadPageData)
+            $('.handle').on('click', (evt) => {
+                evt.preventDefault()
+                let url = $(evt.target).attr('href')
+                $.getJSON(url, (json) => {
+                    if (json.code === 30000) {
+                        $(evt.target).parent().prev().text('已受理')
+                        alert(json.mesg)
+                    } else {
+                        alert(json.mesg)
+                    }
+                })
+
+            })
+            $('.delete').on('click', (evt) => {
+                evt.preventDefault()
+                if (confirm('确定删除该记录吗？')) {
+                    let url = $(evt.target).attr('href')
+                    $.getJSON(url, (json) => {
+                        if (json.code === 40000) {
+                            $(evt.target).parent().parent().remove()
+                        } else {
+                            alert(json.mesg)
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts-en.simple.js"></script>
+    <script>
+        let myChart = echarts.init(document.querySelector('#main'));
+
+        let option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data: ['违章记录']
+            },
+            xAxis: {
+                data: []
+            },
+            yAxis: {},
+            series: [{
+                name: '违章记录',
+                type: 'bar',
+                data: []
+            }]
+        };
+        $.getJSON('/bardata/', json =>{
+            option.xAxis.data = json.xdata
+            option.series[0].data = json.ydata
+            myChart.setOption(option);
         })
     </script>
 </body>

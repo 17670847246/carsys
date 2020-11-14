@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 from carsys import settings
-from search.views import search_records, show_index, handle_record, delete_record
+from search.views import search_records, show_index, handle_record, delete_record, export_excel, export_exce, \
+    get_bar_data
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,6 +26,9 @@ urlpatterns = [
     path('search/', search_records),
     path('handle/', handle_record),
     path('delete/', delete_record),
+    path('export/', export_excel),
+    path('expor/', export_exce),
+    path('bardata/', get_bar_data),
 ]
 
 if settings.DEBUG:
