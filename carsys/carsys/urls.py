@@ -17,13 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 
 from carsys import settings
-from search.views import search_records, show_index, handle_record, delete_record, export_excel, export_exce, \
-    get_bar_data
+from search.views import show_index, handle_record, delete_record, export_excel, export_exce, \
+    get_bar_data, search
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', show_index),
-    path('search/', search_records),
+    path('api/records/', search),
     path('handle/', handle_record),
     path('delete/', delete_record),
     path('export/', export_excel),

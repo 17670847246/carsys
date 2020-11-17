@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>违章查询</title>
+    <style>
+        #result>table {
+            border-collapse: collapse;
+        }
+        #result th {
+            border-bottom: 1px solid black;
+        }
+        #result td {
+            text-align: center;
+            height: 30px;
+            border-bottom: 1px dashed darkgray
+        }
+        #result tr:last-child>td{
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="result">
+        <form id="search" action="/search/" method="post">
+            <input type="text" size="30" name="carinfo" value="{{ carinfo }}" placeholder="请输入车牌号或车主姓名">
+            <input type="submit" value="查询">
+        </form>
+        <hr>
+        <table id="data">
+            <tr>
+                <th width="100">车牌号</th>
+                <th width="100">车主姓名</th>
+                <th width="150">违章原因</th>
+                <th width="180">违章时间</th>
+                <th width="180">处罚方式</th>
+                <th width="100">是否受理</th>
+                <th width="120">操作</th>
+            </tr>
+            <tr>
+                <td>{{ record.car.carno }}</td>
+                <td>{{ record.car.owner }}</td>
+                <td>{{ record.reason }}</td>
+                <td>{{ record.makedate }}</td>
+                <td>{{ record.punish }}</td>
+                <td>{{ recoed.dealt }} </td>
+                <td>
+                    <a class="handle" href="/handle/?rno={{ record.no }}">受理</a>
+                    <a class="delete" href="/delete/?rno={{ record.no }}">删除</a>
+                </td>
+            </tr>
+        </table>
+        <div class="buttons">
+            <button data="?size={{ page_size }}">首页</button>&nbsp;&nbsp;
+            <button data="?page={{ page_obj.number | add:'-1'}}&size={{ page_size }}">上一页</button>&nbsp;&nbsp;
+            <button disabled>上一页</button>
+            第 {{ page_obj.number }} 页/共 {{ total_page }} 页&nbsp;&nbsp;
+            <button data="?page={{ page_obj.number | add:'1' }}&size={{ page_size }}">下一页</button>&nbsp;&nbsp;
+            <button disabled>下一页</button>
+            <button data="?page={{ total_page }}&size={{ page_size }}">末页</button>
+        </div>
+        <a href="/export/">导出Excel</a>
+        <a href="/expor/">导出人员表</a>
+        <div id="main" style="width: 800px;height:400px"></div>
+    </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.min.js"></script>
+    <script>
+        
+    </script>
+</body>
+</html>

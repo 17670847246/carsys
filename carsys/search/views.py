@@ -6,48 +6,64 @@ from django.core.paginator import Paginator
 from django.db import connection
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 
 # Create your views here.
 from django.utils import timezone
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from search.models import Record, Car
+from search.serializers import RecordSerializer
 
 
 def show_index(request: HttpRequest) -> HttpResponse:
-    return render(request, 'index.html')
+    return redirect('/static/html/index.html')
+
+@api_view(('GET', ))
+def search(request: HttpRequest) -> HttpResponse:
+    queryset = Record.objects.filter(is_deleted=False) \
+        .defer('is_deleted', 'deleted_time', 'updated_time') \
+        .select_related('car').order_by('-makedate')
+    carinfo = request.POST.get('carinfo', '')
+    if carinfo:
+        queryset = queryset.filter(
+            Q(car__carno__startswith=carinfo) | Q(car__owner__contains=carinfo)
+        )
+    serl = RecordSerializer(queryset, many=True) # 返回数组对象
+    return Response({'records': serl.data})
 
 
-def search_records(request: HttpRequest) -> HttpResponse:
-    try:
-        page = int(request.GET.get('page', '1'))
-        page = page if page >= 1 else 1
-        size = int(request.GET.get('size', '5'))
-        size = size if 0 < size <= 50 else 5
-        # 一对一、多对一外键关联可以通过QuerySet对象的select_related('关联对象')解决1+N查询问题
-        # 多对多外键关联可以通过QuerySet对象的prefetch_related('关联对象')解决1+N查询问题
-        # 可以通过QuerySet对象的only方法指定哪些字段需要投影
-        # 可以通过QuerySet对象的defer方法指定哪些字段是不需要投影的
-        queryset = Record.objects.filter(is_deleted=False) \
-            .defer('is_deleted', 'deleted_time', 'updated_time') \
-            .select_related('car').order_by('-makedate')
-        carinfo = request.POST.get('carinfo', '').strip().upper()
-        if carinfo:
-            queryset = queryset.filter(
-                Q(car__carno__startswith=carinfo) | Q(car__owner__contains=carinfo)
-            )
-        # total_page = (queryset.count() -1) // size + 1
-        # queryset = queryset.order_by('-makedate')[(page-1) * size: page * size]
-        paginator = Paginator(queryset, size)
-        page_obj = paginator.get_page(page)
-        return render(request, 'index.html', {
-            'page_obj': page_obj,
-            'carinfo': carinfo,
-            'total_page': paginator.num_pages,
-            'page_size': size,
-        })
-    except ValueError:
-        return redirect('/')
+# def search_records(request: HttpRequest) -> HttpResponse:
+#     try:
+#         page = int(request.GET.get('page', '1'))
+#         page = page if page >= 1 else 1
+#         size = int(request.GET.get('size', '5'))
+#         size = size if 0 < size <= 50 else 5
+#         # 一对一、多对一外键关联可以通过QuerySet对象的select_related('关联对象')解决1+N查询问题
+#         # 多对多外键关联可以通过QuerySet对象的prefetch_related('关联对象')解决1+N查询问题
+#         # 可以通过QuerySet对象的only方法指定哪些字段需要投影
+#         # 可以通过QuerySet对象的defer方法指定哪些字段是不需要投影的
+#         queryset = Record.objects.filter(is_deleted=False) \
+#             .defer('is_deleted', 'deleted_time', 'updated_time') \
+#             .select_related('car').order_by('-makedate')
+#         carinfo = request.POST.get('carinfo', '').strip().upper()
+#         if carinfo:
+#             queryset = queryset.filter(
+#                 Q(car__carno__startswith=carinfo) | Q(car__owner__contains=carinfo)
+#             )
+#         # total_page = (queryset.count() -1) // size + 1
+#         # queryset = queryset.order_by('-makedate')[(page-1) * size: page * size]
+#         paginator = Paginator(queryset, size)
+#         page_obj = paginator.get_page(page)
+#         return render(request, 'index.html', {
+#             'page_obj': page_obj,
+#             'carinfo': carinfo,
+#             'total_page': paginator.num_pages,
+#             'page_size': size,
+#         })
+#     except ValueError:
+#         return redirect('/')
 
 
 def handle_record(request: HttpRequest) -> HttpResponse:
