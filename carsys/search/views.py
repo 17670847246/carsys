@@ -25,7 +25,7 @@ def search(request: HttpRequest) -> HttpResponse:
     queryset = Record.objects.filter(is_deleted=False) \
         .defer('is_deleted', 'deleted_time', 'updated_time') \
         .select_related('car').order_by('-makedate')
-    carinfo = request.POST.get('carinfo', '')
+    carinfo = request.GET.get('carinfo', '')
     if carinfo:
         queryset = queryset.filter(
             Q(car__carno__startswith=carinfo) | Q(car__owner__contains=carinfo)

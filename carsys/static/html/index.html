@@ -22,12 +22,10 @@
 </head>
 <body>
     <div id="result">
-        <form id="search" action="/search/" method="post">
-            <input type="text" size="30" name="carinfo" value="{{ carinfo }}" placeholder="请输入车牌号或车主姓名">
-            <input type="submit" value="查询">
-        </form>
+        <input type="text"  v-model="carinfo" placeholder="请输入车牌号或车主姓名">
+        <button @click="search()">查询</button>
         <hr>
-        <table id="data">
+        <table v-if="records.length > 0">
             <tr>
                 <th width="100">车牌号</th>
                 <th width="100">车主姓名</th>
@@ -37,19 +35,20 @@
                 <th width="100">是否受理</th>
                 <th width="120">操作</th>
             </tr>
-            <tr>
+            <tr v-for="record in records">
                 <td>{{ record.car.carno }}</td>
                 <td>{{ record.car.owner }}</td>
                 <td>{{ record.reason }}</td>
                 <td>{{ record.makedate }}</td>
                 <td>{{ record.punish }}</td>
-                <td>{{ recoed.dealt }} </td>
+                <td>{{ record.dealt }} </td>
                 <td>
                     <a class="handle" href="/handle/?rno={{ record.no }}">受理</a>
                     <a class="delete" href="/delete/?rno={{ record.no }}">删除</a>
                 </td>
             </tr>
         </table>
+        <!--
         <div class="buttons">
             <button data="?size={{ page_size }}">首页</button>&nbsp;&nbsp;
             <button data="?page={{ page_obj.number | add:'-1'}}&size={{ page_size }}">上一页</button>&nbsp;&nbsp;
@@ -62,10 +61,24 @@
         <a href="/export/">导出Excel</a>
         <a href="/expor/">导出人员表</a>
         <div id="main" style="width: 800px;height:400px"></div>
+        -->
     </div>
     <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.min.js"></script>
     <script>
-
+        let app = new Vue({
+            el: '#result',
+            data: {
+                carinfo: '',
+                records: []
+            },
+            methods: {
+                search() {
+                    fetch('/api/records/').then(resp => resp.json()).then(json => {
+                        this.records =json.records
+                    })
+                }
+            }
+        })
     </script>
 </body>
 </html>
