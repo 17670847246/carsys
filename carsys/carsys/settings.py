@@ -149,3 +149,10 @@ CACHES = {
         }
     },
 }
+
+REST_FRAMEWORK = {
+    # 配置默认⻚⾯⼤⼩
+    'PAGE_SIZE': 2,
+    # 配置默认的分⻚类
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+}

@@ -20,11 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="86c72c28-62f4-4970-8698-4a9847324445" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/api/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/carsys/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/carsys/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/search/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/search/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/carsys/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/carsys/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

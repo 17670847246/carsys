@@ -4,12 +4,12 @@ from django.http import HttpRequest, HttpResponse
 from django.views.decorators.cache import cache_page
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from search.models import Record, Car
 from search.serializers import RecordSerializer, CarDetailSerializer
 
-
+# 如果要设计只读的设计接口设计为ReadOnlyModelViewSet
 class CarViewSet(ModelViewSet):
     queryset = Car.objects.all()
     serializer_class = CarDetailSerializer
