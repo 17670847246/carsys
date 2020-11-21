@@ -5,6 +5,13 @@ from rest_framework import serializers
 
 from search.models import Record, Car
 
+class CarDetailSerializer(serializers.ModelSerializer):
+    """车详细的序列化器"""
+
+    class Meta:
+        model = Car
+        fields = '__all__'
+
 
 class CarSerializer(serializers.ModelSerializer):
     """车序列化器"""

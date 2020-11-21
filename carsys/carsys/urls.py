@@ -15,21 +15,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from carsys import settings
 from search.views import show_index, handle_record, delete_record, export_excel, export_exce, \
-    get_bar_data, search
+    get_bar_data
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', show_index),
-    path('api/records/', search),
+    path('admin/', admin.site.urls),
     path('handle/', handle_record),
     path('delete/', delete_record),
     path('export/', export_excel),
     path('expor/', export_exce),
     path('bardata/', get_bar_data),
+    path('api/', include('api.urls'))
 ]
+
+
 
 if settings.DEBUG:
     import debug_toolbar
