@@ -10,6 +10,7 @@ from django.shortcuts import redirect
 
 # Create your views here.
 from django.utils import timezone
+from django.views.decorators.cache import cache_page
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -20,7 +21,10 @@ from search.serializers import RecordSerializer
 def show_index(request: HttpRequest) -> HttpResponse:
     return redirect('/static/html/index.html')
 
+# FBV - 基于函数的视图 - 最灵活高度定制
+# CBV - 基于类的视图 - 代码及其简单
 @api_view(('GET', ))
+@cache_page(timeout=60)
 def search(request: HttpRequest) -> HttpResponse:
     queryset = Record.objects.filter(is_deleted=False) \
         .defer('is_deleted', 'deleted_time', 'updated_time') \

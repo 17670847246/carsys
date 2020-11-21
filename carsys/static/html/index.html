@@ -22,7 +22,7 @@
 </head>
 <body>
     <div id="result">
-        <input type="text"  v-model.trim="carinfo" @keydown.enter="search()" placeholder="请输入车牌号或车主姓名">
+        <input type="text" size="30" v-model.trim="carinfo" placeholder="请输入车牌号或车主姓名" @keydown.enter=search()>
         <button @click="search()">查询</button>
         <hr>
         <table v-if="records.length > 0">
@@ -41,10 +41,10 @@
                 <td>{{ record.reason }}</td>
                 <td>{{ record.makedate }}</td>
                 <td>{{ record.punish }}</td>
-                <td>{{ record.dealt | handledOrNot }} </td>
+                <td>{{ record.dealt | handleOrNot }} </td>
                 <td>
-                    <a href="" @click.prevent="handle(record)">受理</a>
-                    <a href="" @click.prevent="remove(record)">删除</a>
+                    <a  href="" @click.prevent="handle(record)">受理</a>
+                    <a  href="" @click.prevent="remove(record)">删除</a>
                 </td>
             </tr>
         </table>
@@ -58,10 +58,8 @@
             <button disabled>下一页</button>
             <button data="?page={{ total_page }}&size={{ page_size }}">末页</button>
         </div>
-        <a href="/export/">导出Excel</a>
-        <a href="/expor/">导出人员表</a>
-        <div id="main" style="width: 800px;height:400px"></div>
         -->
+        <div id="main" style="width: 800px;height:400px"></div>
     </div>
     <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.min.js"></script>
     <script>
@@ -71,18 +69,20 @@
                 carinfo: '',
                 records: []
             },
-            created() { // 钩子函数（回调函数） -创建好Vue对象之后自动执行
+            created() { //钩子函数（回调函数）创建Vue对象后自动执行
                 this.search()
             },
             methods: {
                 search() {
-                    fetch('/api/records/?carinfo=' + this.carinfo).then(resp => resp.json()).then(json => {
-                        this.records =json.records
+                    fetch('/api/records/?carinfo=' + this.carinfo)
+                    .then(resp => resp.json()).
+                    then(json => {
+                        this.records = json.records
                     })
                 },
                 handle(record) {
                     if (!record.dealt) {
-                        fetch('/handle/?rno='+ record.no).then(resp => resp.json()).then(json => {
+                        fetch('/handle/?rno=' + record.no).then(resp => resp.json()).then(json => {
                             if (json.code === 30000) {
                                 record.dealt = true
                             }
@@ -90,21 +90,20 @@
                     }
                 },
                 remove(record) {
-                    if(confirm('确定要删除记录吗'))
+                    if(confirm('确定要删除这条记录吗?')){
                         if (record.dealt) {
-                            fetch('/delete/?rno=' + record.no)
-                            .then(resp => resp.json())
-                            .then(json => {
+                            fetch('/delete/?rno=' + record.no).then(resp => resp.json()).then(json => {
                                 let index = this.records.indexOf(record)
                                 this.records.splice(index, 1)
                             })
                         } else {
-                            alert('只能删除已受理的违章记录')
+                            alert('只能删除已受理的记录')
                         }
                     }
-                },
+                }
+            },
             filters: {
-                handledOrNot(dealt) {
+                handleOrNot(dealt) {
                     return dealt? '已受理' : '未受理'
                 }
             }
